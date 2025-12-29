@@ -7,22 +7,36 @@ from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
 
 
+from tensorflow.keras.utils import image_dataset_from_directory
+import librosa
+import numpy as np
+
 def load_lfw_dataset():
-    print("Loading LFW (face) dataset...")
-    (train_face, train_labels), (test_face, test_labels) = tf.keras.datasets.lfw.load_data()
-    return train_face, train_labels, test_face, test_labels
+    print("Download LFW manually and load using your local path")
+    raise NotImplementedError("No TF built-in LFW loader")
 
 def load_voxceleb_dataset():
-    print("Loading VoxCeleb (voice) dataset...")
-    train_voice = image_dataset_from_directory('path_to_voxceleb/train', image_size=(128, 128), color_mode='grayscale')
-    test_voice = image_dataset_from_directory('path_to_voxceleb/test', image_size=(128, 128), color_mode='grayscale')
-    return train_voice, test_voice
+    print("Loading VoxCeleb audio dataset...")
+    def load_audio_folder(folder):
+        X, y = [], []
+        for label, person in enumerate(os.listdir(folder)):
+            person_path = os.path.join(folder, person)
+            for file in os.listdir(person_path):
+                wav, sr = librosa.load(os.path.join(person_path, file), sr=16000)
+                mfcc = librosa.feature.mfcc(y=wav, sr=sr, n_mfcc=40)
+                X.append(np.mean(mfcc, axis=1))
+                y.append(label)
+        return np.array(X), np.array(y)
+    X_train, y_train = load_audio_folder("path_to_voxceleb/train")
+    X_test, y_test = load_audio_folder("path_to_voxceleb/test")
+    return X_train, y_train, X_test, y_test
 
 def load_mcyt100_dataset():
-    print("Loading MCYT-100 (signature) dataset...")
-    train_sig = image_dataset_from_directory('path_to_mcyt100/train', image_size=(224, 224), color_mode='grayscale')
-    test_sig = image_dataset_from_directory('path_to_mcyt100/test', image_size=(224, 224), color_mode='grayscale')
+    print("Load MCYT-100 using your local directory...")
+    train_sig = image_dataset_from_directory("path_to_mcyt100/train", image_size=(224,224), color_mode='grayscale')
+    test_sig = image_dataset_from_directory("path_to_mcyt100/test", image_size=(224,224), color_mode='grayscale')
     return train_sig, test_sig
+
 
 def preprocess_data(train_face, train_voice, train_sig):
     print("Preprocessing datasets...")
