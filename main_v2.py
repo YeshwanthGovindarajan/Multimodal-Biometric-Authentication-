@@ -9,19 +9,17 @@ import matplotlib.pyplot as plt
 
 def load_lfw_dataset():
     print("Loading LFW (face) dataset...")
-    (train_face, train_labels), (test_face, test_labels) = tf.keras.datasets.lfw.load_data()  # Placeholder for LFW
+    (train_face, train_labels), (test_face, test_labels) = tf.keras.datasets.lfw.load_data()
     return train_face, train_labels, test_face, test_labels
 
 def load_voxceleb_dataset():
     print("Loading VoxCeleb (voice) dataset...")
-    # Assuming VoxCeleb data is stored in a directory in spectrogram format
     train_voice = image_dataset_from_directory('path_to_voxceleb/train', image_size=(128, 128), color_mode='grayscale')
     test_voice = image_dataset_from_directory('path_to_voxceleb/test', image_size=(128, 128), color_mode='grayscale')
     return train_voice, test_voice
 
 def load_mcyt100_dataset():
     print("Loading MCYT-100 (signature) dataset...")
-    # Assuming signature data is stored in a directory of images
     train_sig = image_dataset_from_directory('path_to_mcyt100/train', image_size=(224, 224), color_mode='grayscale')
     test_sig = image_dataset_from_directory('path_to_mcyt100/test', image_size=(224, 224), color_mode='grayscale')
     return train_sig, test_sig
